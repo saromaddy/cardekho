@@ -2,6 +2,40 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
+import base64
+
+# Function to convert image to base64
+def get_base64_of_bin_file(bin_file):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+
+# Path to your image
+background_image_path = 'imgs/bgimgg.jpg'
+
+# Convert the image to base64
+base64_image = get_base64_of_bin_file(background_image_path)
+
+
+# CSS to inject
+page_bg_img = f"""
+<style>
+[data-testid="stAppViewContainer"] {{
+    background-image: url("data:image/jpg;base64,{base64_image}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}}
+</style>
+"""
+st.set_page_config(
+    page_title="Car Price Prediction",
+    page_icon='imgs/carlogo.png'
+)
+
+# Inject CSS with markdown
+st.markdown(page_bg_img, unsafe_allow_html=True)
 
 # Load pickled objects
 with open('label_encoders.pkl', 'rb') as file:
@@ -14,10 +48,7 @@ with open('carprice.pkl', 'rb') as file:
     model = pickle.load(file)
 
 # Set page configuration
-st.set_page_config(
-    page_title="Car Price Prediction",
-    page_icon=r"img/carlogo.png"
-)
+
 
 # Apply CSS styling
 st.markdown("""
@@ -28,8 +59,47 @@ h1 {
 </style>
 """, unsafe_allow_html=True)
 
+def about_the_developer():
+    st.header("Developer Details")
+    st.image("imgs/saro.jpg", caption="Saravana Kumar T", width=250)
+    st.subheader("Contact Details")
+    st.write("Email: saromaddymca@gmail.com")
+    st.write("Phone: 8940574870")
+    st.write("[LinkedIn ID](https://www.linkedin.com/in/sarokumar/)")
+    st.write("[github.com](https://github.com/saromaddy)")
+
+
+def skills_take_away():
+    st.header("Skills Take Away From This Project")
+    st.caption("Data Scraping")
+    st.caption("Data Cleaning")
+    st.caption("Python")
+    st.caption("Pandas")
+    st.caption("Machine Learning")
+    st.caption("Algoirthms in Machine Learning")
+    st.caption("Streamlit Application")
+
+def objective():
+    st.header("Objective")
+    st.write("To Develop a streamlit application to predict the prices of the used cars using Machine Learning Algorithms")
+
+def prerequisites():
+    st.header("Prerequisites")
+    st.write("1. Python Environment: Install Python on your system.")
+    st.write("2. Pandas, Scikit-learn, Matplotlib, Seaborn, Numpy, JSON")
+
+def Approach():
+    st.header("Approach")
+    st.write("Structuring the Given Dataset")
+    st.write("Data Cleansing - Especially on Null values, duplicates and redundancy")
+    st.write("Exploratory Data Analysis - Skewness, Outliers handling, Correlation")
+    st.write("Getting the dataframe ready for machine learning usng encoders")
+    st.write("Choosing the best machine learning algorithms and hypertune if necessary")
+    st.write("Export the model as pickle")
+    st.write("Develop streamlit application to receive pickle parameters as input and display the predicted results")
+    
 def main():
-    option = st.sidebar.radio("Options", ["Home", "App Page"])
+    option = st.sidebar.radio("Navigation", ["Home", "App Page","About Developer"])
     if option == "Home":
         st.title("About Car Dekho")
         st.write("""
@@ -48,7 +118,7 @@ def main():
                  upload their cars for sale, and find used cars for buying from individuals and used car dealers.
         """)
     
-    else:
+    elif option == "App Page":
         st.title("Car Dekho Price Prediction")
         
         
@@ -221,7 +291,29 @@ def main():
             car_price_pred = model.predict(values_scaled)
             st.success(f"Estimated Price: ₹{round(car_price_pred[0][0], 2)}")
     
-        
+    else:
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.header("About")
+            options = ["About the Developer", "Skills take away From This Project", "Objective", 
+                    "Prerequisites", "Required Python Libraries", "Approach"]
+            choice = st.radio("Go to", options)
+
+        with col2:
+            if choice == "About the Developer":
+                about_the_developer()
+            elif choice == "Skills take away From This Project":
+                skills_take_away()
+            elif choice == "Objective":
+                objective()
+            elif choice == "Prerequisites":
+                prerequisites()
+            elif choice == "Required Python Libraries":
+                required_python_libraries()
+            elif choice == "Approach":
+                Approach()
+
 
 if __name__ == "__main__":
     main()
