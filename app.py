@@ -73,7 +73,7 @@ def main():
         front_brake = st.selectbox("Front Brake",["Select Front Brake type"]+['Disc', 'others']) 
         rear_brake = st.selectbox("Rear Brake",["Select Rear brake type"]+['Disc', 'Drum']) 
         tyre_type = st.selectbox("Tyre Type",["Select Tyre type"]+['Radial', 'Tubeless']) 
-
+        door = st.slider("No of Doors", min_value=4, max_value=5)
         city = st.selectbox("City",["Select City"]+['Bangalore', 'Chennai', 'Delhi', 'Hyderabad', 'Jaipur', 'Kolkata'])
 
         details1 = []
@@ -142,6 +142,12 @@ def main():
         if seat:
             details1.append(seat)
         
+        cylinder_mean = 4
+        details1.append(cylinder_mean)
+
+        valuespercylinder_mean = 4
+        details1.append(valuespercylinder_mean)
+        
         Length_mean = 3880.395
         details1.append(Length_mean)
 
@@ -153,6 +159,11 @@ def main():
 
         wheelbase_mean = 2465.064
         details1.append(wheelbase_mean)
+
+        if door:
+            details1.append(door)
+
+
 
         if steering_type != "Select Steering type":
             # city = city.lower()
@@ -200,7 +211,7 @@ def main():
             st.warning("Please choose correct any option in city box")
         # Convert to DataFrame and scale
         details = [details1]
-        if len(details1) == 18:
+        if len(details1) == 24:
             values_scaled = scaler.transform(details)
         
         #st.write(f"Scaled Input Data: {values_scaled}")
@@ -208,7 +219,7 @@ def main():
 
         if st.button("Estimate Price"):
             car_price_pred = model.predict(values_scaled)
-            st.success(f"Estimated Price: ₹{round(car_price_pred[0], 2)}")
+            st.success(f"Estimated Price: ₹{round(car_price_pred[0][0], 2)}")
     
         
 
